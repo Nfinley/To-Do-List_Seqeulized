@@ -1,0 +1,93 @@
+
+<div class = "container">
+<div class="row">
+
+  <div class="col m2"></div>
+
+  <div class="col m8">
+		
+		<form class="create-update-form" action="todo/create" method="POST">
+
+		  <div class="form-group writing">
+		    <label for="task">Enter Task:</label>
+		    <input type="text" id="task" name="name">
+		  </div>
+
+
+
+		  <button type="submit" class="waves-effect waves-light btn green">Create Task</button>
+		</form>
+	</div>
+  <div class="col m2"></div>
+
+
+</div>
+  {{!-- End of create task --}}
+
+{{!-- Start of todo and done columns --}}
+<div class="row">
+
+	{{!-- TODO column --}}
+  <div class="col m6 columnLeft">
+	{{!-- Will display those tasks in the TODO section --}}
+	<h4> TO DO </h4>
+
+	<ul>
+	  {{#each todo}}
+	    {{#unless this.completed}}
+	      <div class="card-panel amber darken-1 z-depth-4">
+	      <span class="white-text">
+	      <li>
+	        <span class = "writing">{{this.task_name}} </span>
+
+	        <form action="todo/update/{{this.id}}?_method=PUT" method="POST">
+	          <input type="hidden" name="task" value="true">
+	          <button type="submit" class="waves-effect waves-light btn green complete_float left"> <i class="fa fa-check-square-o"></i></button>
+	        </form>
+	        <form action="todo/delete/{{this.id}}?_method=DELETE" method="POST">
+	          <input type="hidden" name="task" value="true">
+	          <button type="submit" class="waves-effect waves-light btn red trash_float right"><i class="fa fa-trash"></i></button>
+	        </form>
+			
+	      </li>
+	      </span>
+	      </div>
+	    {{/unless}}
+	  {{/each}}
+	</ul>
+
+  </div>
+
+  {{!-- Done column --}}
+  <div class="col m6 columnRight">
+
+
+{{!-- The completed section once a user clicks on the button done --}}
+<h4> Done </h4>
+
+<ul>
+  {{#each todo}}
+    {{#if this.completed}}
+    <div class="card-panel green z-depth-4">
+	<span class="white-text">
+      <li>
+        <span class = "writing">{{this.task_name}}</span>
+
+        <form action="todo/update/{{this.id}}?_method=PUT" method="POST">
+          <input type="hidden" name="task" value="false">
+          <button type="submit" class="waves-effect waves-light btn grey complete_float left"><i class="fa fa-arrow-left"></i></button>
+        </form>
+
+        <form action="todo/delete/{{this.id}}?_method=DELETE" method="POST">
+	          <input type="hidden" name="task" value="true">
+	          <button type="submit" class="waves-effect waves-light btn red trash_float right"><i class="fa fa-trash"></i></button>
+	        </form>
+      </li>
+	</span>
+    </div>
+    {{/if}}
+  {{/each}}
+</ul>
+ </div>
+ </div>
+ </div>
