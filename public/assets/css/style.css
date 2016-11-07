@@ -49,6 +49,10 @@ button {
 	margin-top: 10px;
 
 }
+
+#assigned {
+	color: black;
+}
 /*.complete_float {
 	clear:both;
 }

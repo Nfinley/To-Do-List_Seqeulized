@@ -6,7 +6,7 @@
 
   <div class="col m8">
 		
-		<form class="create-update-form" action="todo/create" method="POST">
+		<form class="create-update-form" action="/create" method="POST">
 
 		  <div class="form-group writing">
 		    <label for="task">Enter Task:</label>
@@ -40,11 +40,12 @@
 	      <li>
 	        <span class = "writing">{{this.task_name}} </span>
 
-	        <form action="todo/update/{{this.id}}?_method=PUT" method="POST">
+	        <form action="/update/{{this.id}}?_method=PUT" method="POST">
 	          <input type="hidden" name="task" value="true">
 	          <button type="submit" class="waves-effect waves-light btn green complete_float left"> <i class="fa fa-check-square-o"></i></button>
+	          <div><input type="textbox" name="user" placeholder="Assigned to?" id="assigned"></div>
 	        </form>
-	        <form action="todo/delete/{{this.id}}?_method=DELETE" method="POST">
+	        <form action="/delete/{{this.id}}?_method=DELETE" method="POST">
 	          <input type="hidden" name="task" value="true">
 	          <button type="submit" class="waves-effect waves-light btn red trash_float right"><i class="fa fa-trash"></i></button>
 	        </form>
@@ -73,12 +74,12 @@
       <li>
         <span class = "writing">{{this.task_name}}</span>
 
-        <form action="todo/update/{{this.id}}?_method=PUT" method="POST">
+        <form action="/move-back/{{this.id}}?_method=PUT" method="POST">
           <input type="hidden" name="task" value="false">
           <button type="submit" class="waves-effect waves-light btn grey complete_float left"><i class="fa fa-arrow-left"></i></button>
         </form>
 
-        <form action="todo/delete/{{this.id}}?_method=DELETE" method="POST">
+        <form action="/delete/{{this.id}}?_method=DELETE" method="POST">
 	          <input type="hidden" name="task" value="true">
 	          <button type="submit" class="waves-effect waves-light btn red trash_float right"><i class="fa fa-trash"></i></button>
 	        </form>

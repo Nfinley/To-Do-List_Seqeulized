@@ -1,4 +1,3 @@
-
 /* controller.js file for the To-Do-List-App HW assignment
     Created by: Nigel Finley for the UT BOOTCAMP class
     Date of creation: October 30th, 2016
@@ -7,51 +6,111 @@
 
 var express = require('express');
 var router = express.Router();
-var todo = require('../models/todo_model.js');
+var models = require('../models');
 
+var sequelizeConnection = models.sequelize;
 /* GET home page. */
-router.get('/', function (req, res) {
-	res.redirect('/todo');
+router.get('/', function(req, res) {
+    return sequelizeConnection.sync()
+        .then(function() {
+            return models.Todo.findAll()
+        })
+        .then(function(data) {
+            console.log("this is data: ", data);
+            var hbsObject = { todo: data };
+            // console.log(hbsObject);
+            return res.render('index', hbsObject);
+        })
+        .catch(function(err) {
+            console.log(err);
+        })
 });
 
-router.get('/todo', function (req, res) {
-	todo.selectAll()
-	.then(function (data) {
-		var hbsObject = { todo: data };
-		// console.log(hbsObject);
-		res.render('index', hbsObject);
-	});
+// this route tasks the users task that was just entered on the page
+router.post('/create', function(req, res) {
+    return sequelizeConnection.sync()
+        .then(function() {
+            models.Todo.create({
+                task_name: req.body.name,
+                completed: '0'
+            });
+
+            return res.redirect('/');
+        })
+
 });
 
-router.post('/todo/create', function(req, res){
-	todo.create(req.body.name)
-		.then(function(data){
-			console.log('new data ', data)
-			res.redirect('/todo');
-		});
-		
+// this route deletes the task 
+router.delete('/delete/:id', function(req, res) {
+    return sequelizeConnection.sync()
+    .then(function() {
+        models.Todo.destroy({
+            where: {
+                id: req.params.id,
+            }
+        });
+
+        return res.redirect('/');
+    })
 });
 
 
-router.put('/todo/update/:id', function (req, res) {
-	var condition = 'id = ' + req.params.id;
-	todo.update({ completed: req.body.task }, condition)
-		.then(function(data){
-			console.log('condition', condition, "--", "body task: ", req.body.task);
-			res.redirect('/todo');
+// this route takes the todo task and puts it in the completed section
+router.put('/update/:id', function(req, res) {
+    return sequelizeConnection.sync()
+ //    .then(function(){
 
-	});
-		
-});
+	// 	return models.user.create(
+	// 	{
+	// 		userName:req.body.customer,
 
-router.delete('/todo/delete/:id', function(req, res){
-	var condition = 'id = ' + req.params.id;
-	todo.delete(condition)
-		.then(function(data){
-			console.log('deleted this row: ' , data);
-			res.redirect('/todo');
+	// 	})
+	// })
 
-		})
+	// .then(function(user){
+
+	// 	return models.Todo.findOne({
+	// 		where: {
+	// 			id:req.params.id
+	// 		}
+	// 	})
+	// 	.then(function(aTask){
+	// 		return user.setTodo(aTask);
+	// 	})
+
+	// })
+    // this takes in the id of the task and then when pushed to the view will move it to completed
+    .then(function() {
+        models.Todo.update({
+        	completed: '1',
+        },
+        {
+            where: {
+                id: req.params.id,
+            }
+        });
+
+        return res.redirect('/');
+    })
 })
+
+// The route takes the todo note and puts it back in the todo section
+router.put('/move-back/:id', function(req, res) {
+    return sequelizeConnection.sync()
+    .then(function() {
+        models.Todo.update({
+        	completed: '0',
+        },
+        {
+            where: {
+                id: req.params.id,
+            }
+        });
+
+        return res.redirect('/');
+    })
+})
+
+
 
 module.exports = router;
