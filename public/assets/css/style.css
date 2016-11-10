@@ -1,7 +1,7 @@
 body {
   padding: 20px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: #ccc;
+  background: url(http://res.cloudinary.com/thefinleycode/image/upload/v1478754313/france-1790999_1280_vgzysi.jpg) no-repeat center fixed;
 
 }
 
@@ -19,6 +19,14 @@ li {
 	padding: 10px;
 }
 
+h3 { 
+	margin-top: 3px;
+ }
+
+ h4 {
+ 	color: white;
+ }
+
 .container {
 	width: 90%;
 }
@@ -33,17 +41,23 @@ li {
 
 #task {
 	font-size: 40px;
+	background-color: rgba(192,192,192,.7)
+
 }
+
 
 label { 
 	font-size: 1.5em;
+	color: #110d0d;
  }
 
 .card-panel{
 	/*padding: 10px;*/
-	width: 80%;
+	width: 100%;
 	
 	padding-bottom: 40px;
+
+
 }
 button {
 	margin-top: 10px;
@@ -52,6 +66,11 @@ button {
 
 #assigned {
 	color: black;
+
+}
+
+.assignTo{
+	font-size: .5em;
 }
 /*.complete_float {
 	clear:both;

@@ -9,11 +9,13 @@ var router = express.Router();
 var models = require('../models');
 
 var sequelizeConnection = models.sequelize;
+
+
 /* GET home page. */
 router.get('/', function(req, res) {
     return sequelizeConnection.sync()
         .then(function() {
-            return models.Todo.findAll()
+            return models.User.findAll({ include: [models.Todo] })
         })
         .then(function(data) {
             console.log("this is data: ", data);
@@ -26,90 +28,114 @@ router.get('/', function(req, res) {
         })
 });
 
-// this route tasks the users task that was just entered on the page
+
+// Creates the task
 router.post('/create', function(req, res) {
     return sequelizeConnection.sync()
         .then(function() {
-            models.Todo.create({
-                task_name: req.body.name,
-                completed: '0'
+            models.User.create({
+                Todo: {
+                    task_name: req.body.name,
+                    completed: '0'
+                },
+                username: ""
+            }, {
+                include: [models.Todo]
             });
+            return res.redirect('/');
+        })
+});
 
+
+// Will move the task from TODO to DONE
+router.put('/update/:todoId/:userId/', function(req, res) {
+    return sequelizeConnection.sync()
+
+
+    .then(function() {
+
+            return models.Todo.update({
+                completed: '1'
+            }, {
+                where: {
+                    id: req.params.todoId
+                }
+            })
+        })
+        .then(function() {
+            return models.User.update({
+                username: req.body.user
+            }, {
+                where: {
+                    id: req.params.userId
+                }
+            })
+        })
+        .then(function() {
+            return res.redirect('/');
+        })
+
+
+});
+
+// Allows user to move the task back into the Todo bucket
+router.put('/move-back/:todoId/:userId/', function(req, res) {
+    return sequelizeConnection.sync()
+
+
+    .then(function() {
+
+            return models.Todo.update({
+                completed: '0'
+            }, {
+                where: {
+                    id: req.params.todoId
+                }
+            })
+        })
+        .then(function() {
+            return models.User.update({
+                username: req.body.user
+            }, {
+                where: {
+                    id: req.params.userId
+                }
+            })
+        })
+        .then(function() {
+            return res.redirect('/');
+        })
+
+
+});
+
+// Deletes the task from the page and the database
+router.delete('/delete/:todoId/:userId/', function(req, res) {
+
+    return sequelizeConnection.sync()
+
+    .then(function() {
+
+            return models.Todo.destroy({
+                where: {
+                    id: req.params.todoId
+                }
+            })
+        })
+        .then(function() {
+            return models.User.destroy({
+                where: {
+                    id: req.params.userId
+                }
+
+            })
+
+        })
+        .then(function() {
             return res.redirect('/');
         })
 
 });
-
-// this route deletes the task 
-router.delete('/delete/:id', function(req, res) {
-    return sequelizeConnection.sync()
-    .then(function() {
-        models.Todo.destroy({
-            where: {
-                id: req.params.id,
-            }
-        });
-
-        return res.redirect('/');
-    })
-});
-
-
-// this route takes the todo task and puts it in the completed section
-router.put('/update/:id', function(req, res) {
-    return sequelizeConnection.sync()
- //    .then(function(){
-
-	// 	return models.user.create(
-	// 	{
-	// 		userName:req.body.customer,
-
-	// 	})
-	// })
-
-	// .then(function(user){
-
-	// 	return models.Todo.findOne({
-	// 		where: {
-	// 			id:req.params.id
-	// 		}
-	// 	})
-	// 	.then(function(aTask){
-	// 		return user.setTodo(aTask);
-	// 	})
-
-	// })
-    // this takes in the id of the task and then when pushed to the view will move it to completed
-    .then(function() {
-        models.Todo.update({
-        	completed: '1',
-        },
-        {
-            where: {
-                id: req.params.id,
-            }
-        });
-
-        return res.redirect('/');
-    })
-})
-
-// The route takes the todo note and puts it back in the todo section
-router.put('/move-back/:id', function(req, res) {
-    return sequelizeConnection.sync()
-    .then(function() {
-        models.Todo.update({
-        	completed: '0',
-        },
-        {
-            where: {
-                id: req.params.id,
-            }
-        });
-
-        return res.redirect('/');
-    })
-})
 
 
 
