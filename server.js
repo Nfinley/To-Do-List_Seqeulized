@@ -14,7 +14,7 @@ var methodOverride = require('method-override');
 
 // ====== SETTING UP THE EXPRESS APP ========
 var app = express();
-var PORT = process.env.PORT || 3000;
+// var PORT = process.env.PORT || 3000;
 
 // ======view engine setup=======
 var exphbs = require('express-handlebars');
@@ -38,14 +38,36 @@ app.use(methodOverride('_method'));
 var controller = require('./controllers/todo_controller');
 app.use('/', controller);
 
+
+
+//==== Test content to get server up and running ======
+
+var http    = require('http');
+var db = require('./models');
+app.set('port', process.env.PORT || 3000);
+
+
+// // development only
+// if ('development' === app.get('env')) {
+//     app.use(express.errorHandler());
+// }
+
+db.sequelize.sync().then(function() {
+    http.createServer(app).listen(app.get('port'), function(){
+        console.log('Express server listening on port ' + app.get('port'));
+    });
+});
+
+
+
 // Starts the server to begin listening
 // =============================================================
-app.listen(PORT, function(err) {
-    if (err) {
-        console.log(err);
-    }
-    console.log('App listening on PORT ' + PORT);
-});
+// app.listen(PORT, function(err) {
+//     if (err) {
+//         console.log(err);
+//     }
+//     console.log('App listening on PORT ' + PORT);
+// });
 
 module.exports = app;
 
